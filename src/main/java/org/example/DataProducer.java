@@ -41,7 +41,7 @@ public class DataProducer {
                 producer.send(new ProducerRecord<>(topic, Long.toString(timestamp)));
                 System.out.println("Produced: " + record);
             }
-        }, 0, rateInMillis);
+        }, 100, rateInMillis);
     }
 
     public List<Record> getRecords() {
@@ -49,7 +49,7 @@ public class DataProducer {
     }
 
     public static void main(String[] args) throws IOException {
-        String propertiesFilePath = "/home/charan/IdeaProjects/Blog_producer/src/main/resourcesKafkaProducerConfig.properties";
+        String propertiesFilePath = "/home/charan/IdeaProjects/Blog_producer/src/main/resources/KafkaProducerConfig.properties";
         String topic = "my-topic";
         DataProducer producer = new DataProducer(1000, propertiesFilePath, topic); // Produces a record every second
         producer.start();

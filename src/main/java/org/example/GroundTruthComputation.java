@@ -13,8 +13,8 @@ public class GroundTruthComputation implements Runnable {
     public void run() {
         while (true) {
             List<Record> records = producer.getRecords();
-            // Implement your ground truth computation logic here
-            // For example, just printing the count of records
+            // Implement ground truth computation logic here
+            // I am just printing the count of records
             System.out.println("Computed ground truth for " + records.size() + " records");
             try {
                 Thread.sleep(10000); // Sleep for 10 seconds before next computation

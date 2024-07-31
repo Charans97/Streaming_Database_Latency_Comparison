@@ -21,7 +21,7 @@ public class DataProducer {
     private final long rateInMillis;
     private final KafkaProducer<String, String> producer;
     private final String topic;
-    private final Connection connection;
+    private Connection connection;
 
     public DataProducer(long rateInMillis, String propertiesFilePath, String topic) throws IOException, SQLException {
         this.records = new CopyOnWriteArrayList<>();
@@ -34,13 +34,13 @@ public class DataProducer {
         this.topic = topic;
 
         // Initialize database connection
-        this.connection = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa", "1111");
+        this.connection = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa", "");
         initializeDatabase();
     }
 
     private void initializeDatabase() throws SQLException {
         try (PreparedStatement stmt = connection.prepareStatement(
-                "CREATE TABLE records (timestamp BIGINT PRIMARY KEY)")) {
+                "CREATE TABLE IF NOT EXISTS records (timestamp BIGINT PRIMARY KEY)")) {
             stmt.execute();
         }
     }
@@ -59,9 +59,9 @@ public class DataProducer {
         }, 0, rateInMillis);
     }
 
-    private void storeRecordInDatabase(long timestamp) {
+    private synchronized void storeRecordInDatabase(long timestamp) {
         try (PreparedStatement stmt = connection.prepareStatement(
-                "INSERT INTO records (timestamp) VALUES (?)")) {
+                "MERGE INTO records (timestamp) KEY (timestamp) VALUES (?)")) {
             stmt.setLong(1, timestamp);
             stmt.execute();
         } catch (SQLException e) {
@@ -77,11 +77,26 @@ public class DataProducer {
         return connection;
     }
 
+    public void close() throws SQLException {
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
+        }
+    }
+
     public static void main(String[] args) throws IOException, SQLException {
-        String propertiesFilePath = "/home/charan/IdeaProjects/Blog_producer/src/main/resources/KafkaProducerConfig.properties";
+        String propertiesFilePath = "path/to/KafkaProducerConfig.properties";
         String topic = "my-topic";
         DataProducer producer = new DataProducer(1000, propertiesFilePath, topic); // Produces a record every second
         producer.start();
+
+        // Add shutdown hook to close the connection when the application terminates
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                producer.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }));
     }
 }
 

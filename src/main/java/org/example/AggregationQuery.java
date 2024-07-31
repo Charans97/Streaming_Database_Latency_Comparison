@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 
@@ -32,10 +33,14 @@ public class AggregationQuery implements Runnable {
         }
     }
 
-    public static void main(String[] args) {
-        DataProducer producer = new DataProducer(1000);
-        producer.start();
-        Thread aggregationThread = new Thread(new AggregationQuery(producer));
-        aggregationThread.start();
+
+        public static void main(String[] args) throws IOException {
+            String propertiesFilePath = "/home/charan/IdeaProjects/Blog_producer/src/main/resourcesKafkaProducerConfig.properties";
+            String topic = "my-topic";
+            DataProducer producer = new DataProducer(1000, propertiesFilePath, topic);
+            producer.start();
+            Thread aggregationThread = new Thread(new AggregationQuery(producer));
+            aggregationThread.start();
+
     }
 }

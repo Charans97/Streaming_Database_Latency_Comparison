@@ -3,6 +3,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
 
+import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.Instant;

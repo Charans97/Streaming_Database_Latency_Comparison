@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) throws IOException, SQLException {
-        String propertiesFilePath = "path/to/KafkaProducerConfig.properties";
+        String propertiesFilePath = "/home/charan/IdeaProjects/Blog_producer/src/main/resources/KafkaProducerConfig.properties";
         String topic = "my-topic";
         DataProducer producer = new DataProducer(1000, propertiesFilePath, topic); // Produces a record every second
         producer.start();

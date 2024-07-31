@@ -1,6 +1,5 @@
 package org.example;
 
-import java.io.IOException;
 import java.util.List;
 
 public class GroundTruthComputation implements Runnable {
@@ -15,6 +14,7 @@ public class GroundTruthComputation implements Runnable {
         while (true) {
             List<Record> records = producer.getRecords();
             // Implement your ground truth computation logic here
+            // For example, just printing the count of records
             System.out.println("Computed ground truth for " + records.size() + " records");
             try {
                 Thread.sleep(10000); // Sleep for 10 seconds before next computation
@@ -24,13 +24,5 @@ public class GroundTruthComputation implements Runnable {
             }
         }
     }
-
-    public static void main(String[] args) throws IOException {
-        String propertiesFilePath = "/home/charan/IdeaProjects/Blog_producer/src/main/resources/KafkaProducerConfig.properties";
-        String topic = "my-topic";
-        DataProducer producer = new DataProducer(1000, propertiesFilePath, topic);
-        producer.start();
-        Thread groundTruthThread = new Thread(new GroundTruthComputation(producer));
-        groundTruthThread.start();
-    }
 }
+

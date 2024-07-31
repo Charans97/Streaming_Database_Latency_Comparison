@@ -1,10 +1,11 @@
 package org.example;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        String propertiesFilePath = "/home/charan/IdeaProjects/Blog_producer/src/main/resources/KafkaProducerConfig.properties";
+    public static void main(String[] args) throws IOException, SQLException {
+        String propertiesFilePath = "path/to/KafkaProducerConfig.properties";
         String topic = "my-topic";
         DataProducer producer = new DataProducer(1000, propertiesFilePath, topic); // Produces a record every second
         producer.start();
@@ -14,6 +15,11 @@ public class Main {
 
         Thread aggregationThread = new Thread(new AggregationQuery(producer));
         aggregationThread.start();
+
+        LatencyMeasurement latencyMeasurement = new LatencyMeasurement(producer, 1000); // Query every second
+        Thread latencyThread = new Thread(latencyMeasurement);
+        latencyThread.start();
     }
 }
+
 

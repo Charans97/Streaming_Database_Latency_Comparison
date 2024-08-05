@@ -39,12 +39,8 @@ public class LatencyMeasurement implements Runnable {
             if (rs.next()) {
                 long maxTimestamp = rs.getLong("max_ts");
                 long currentTime = Instant.now().toEpochMilli();
-                if (maxTimestamp > 0) { // Ensure that maxTimestamp is valid
-                    long latency = currentTime - maxTimestamp;
-                    System.out.println("Query result timestamp: " + maxTimestamp + ", Current time: " + currentTime + ", Latency: " + latency + " ms");
-                } else {
-                    System.out.println("No valid timestamp found in the database.");
-                }
+                long latency = currentTime - maxTimestamp;
+                System.out.println("Query result timestamp: " + maxTimestamp + ", Current time: " + currentTime + ", Latency: " + latency + " ms");
             }
         } catch (SQLException e) {
             e.printStackTrace();
